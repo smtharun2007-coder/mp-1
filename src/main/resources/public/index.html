@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="tactical-midnight">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Disaster Relief Resource Allocation & Prioritisation System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-radar-badge">🚨</div>
+        <h1>DISASTER RELIEF SYSTEM</h1>
+        <p>Tactical Resource Allocation, Dynamic Routing &amp; Multi-Criteria Triage</p>
+        <div class="login-atlas-pill">
+          <span class="live-pulse-dot"></span> LIVE MONGODB ATLAS REPLICA SET
+        </div>
+      </div>
+
+      <!-- Quick Role Fill Personas -->
+      <div style="margin-bottom: 8px;">
+        <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">Select Demo Profile</span>
+      </div>
+      <div class="persona-cards-grid">
+        <div class="persona-card active" id="card-persona-admin" onclick="quickFill('admin')">
+          <div style="font-size: 18px; margin-bottom: 4px;">🛡️ Control Room</div>
+          <strong>admin</strong>
+          <span>Central Commander</span>
+        </div>
+        <div class="persona-card" id="card-persona-officer" onclick="quickFill('officer1')">
+          <div style="font-size: 18px; margin-bottom: 4px;">📡 Field Operations</div>
+          <strong>officer1</strong>
+          <span>District Aruvi (LOC01–LOC10)</span>
+        </div>
+      </div>
+
+      <form id="login-form" onsubmit="handleLoginSubmit(event)">
+        <div class="form-group">
+          <label for="login-username">Operator Username</label>
+          <input type="text" id="login-username" class="form-control" placeholder="admin or officer1" required value="admin">
+        </div>
+        <div class="form-group">
+          <label for="login-password">Security Password</label>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" required value="Admin@12345">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px; font-size: 14px;">
+          Authenticate &amp; Enter Console &rarr;
+        </button>
+      </form>
+
+      <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
+        <span style="font-size: 11px; color: var(--text-muted);">Switch UI Theme:</span>
+        <div class="theme-picker-group">
+          <button class="theme-btn active" onclick="setAppTheme('tactical-midnight')" title="Tactical Midnight">🌌</button>
+          <button class="theme-btn" onclick="setAppTheme('emerald-sentinel')" title="Emerald Sentinel">🌿</button>
+          <button class="theme-btn" onclick="setAppTheme('cyberpunk-neon')" title="Cyberpunk Neon">🔮</button>
+          <button class="theme-btn" onclick="setAppTheme('arctic-light')" title="Arctic Light">☀️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATION SCREEN -->
+  <div id="app-screen" style="display: none;">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-badge">DRS</div>
+        <div>
+          <h2>RELIEF CONTROL</h2>
+          <span>COMMAND CONSOLE</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <!-- Control Room Menu (Role: CONTROL_ROOM) -->
+        <div class="menu-role-control">
+          <div class="nav-section-title">Operations Control</div>
+          <a class="nav-item active" onclick="switchView('dashboard')">
+            <span>📊</span> <span>Dashboard</span>
+          </a>
+          <a class="nav-item" onclick="switchView('inbox')">
+            <span>📥</span> <span>Review Inbox</span> <span class="badge" id="badge-inbox">0</span>
+          </a>
+          <a class="nav-item" onclick="switchView('queue')">
+            <span>⚡</span> <span>Priority Queue</span> <span class="badge" id="badge-queue">0</span>
+          </a>
+          <a class="nav-item" onclick="switchView('process')">
+            <span>🎯</span> <span>Process & Allocate</span>
+          </a>
+          <a class="nav-item" onclick="switchView('allocations')">
+            <span>🚚</span> <span>Allocations Desk</span>
+          </a>
+
+          <div class="nav-section-title">Logistics & Infrastructure</div>
+          <a class="nav-item" onclick="switchView('roads')">
+            <span>🛣️</span> <span>Road Network</span>
+          </a>
+          <a class="nav-item" onclick="switchView('stock')">
+            <span>📦</span> <span>Stock & Ledgers</span>
+          </a>
+          <a class="nav-item" onclick="switchView('teams')">
+            <span>🚒</span> <span>Rescue Teams</span>
+          </a>
+          <a class="nav-item" onclick="switchView('shelters')">
+            <span>⛺</span> <span>Shelters</span>
+          </a>
+          <a class="nav-item" onclick="switchView('regions')">
+            <span>📍</span> <span>Region Board</span>
+          </a>
+
+          <div class="nav-section-title">Administration</div>
+          <a class="nav-item" onclick="switchView('users')">
+            <span>👥</span> <span>Personnel</span>
+          </a>
+          <a class="nav-item" onclick="switchView('audit')">
+            <span>📜</span> <span>Audit Trail</span>
+          </a>
+          <a class="nav-item" onclick="switchView('impact')">
+            <span>🌍</span> <span>Impact & SDGs</span>
+          </a>
+          <a class="nav-item" onclick="switchView('design')">
+            <span>📐</span> <span>Design Notes</span>
+          </a>
+        </div>
+
+        <!-- Field Officer Menu (Role: FIELD_OFFICER) -->
+        <div class="menu-role-officer" style="display: none;">
+          <div class="nav-section-title">Field Operations</div>
+          <a class="nav-item active" onclick="switchView('officer-area')">
+            <span>📡</span> <span>My Area (Live)</span>
+          </a>
+          <a class="nav-item" onclick="switchView('officer-new')">
+            <span>📝</span> <span>New Incident Report</span>
+          </a>
+          <a class="nav-item" onclick="switchView('officer-reports')">
+            <span>📋</span> <span>My Reports</span>
+          </a>
+          <a class="nav-item" onclick="switchView('officer-road')">
+            <span>⚠️</span> <span>Report Road Hazard</span>
+          </a>
+
+          <div class="nav-section-title">District Infrastructure</div>
+          <a class="nav-item" onclick="switchView('roads')">
+            <span>🛣️</span> <span>Road Network</span>
+          </a>
+          <a class="nav-item" onclick="switchView('regions')">
+            <span>📍</span> <span>Region Board</span>
+          </a>
+        </div>
+      </nav>
+
+      <div style="padding: 16px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 8px;">
+        <button class="btn btn-secondary btn-sm" onclick="triggerResetDemoData()" style="width: 100%; justify-content: center;">
+          🔄 Reset Demo Data
+        </button>
+        <button class="btn btn-danger btn-sm" onclick="handleLogout()" style="width: 100%; justify-content: center;">
+          🚪 Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <h2 class="current-view-title" id="view-title">Dashboard</h2>
+        </div>
+        <div class="topbar-right">
+          <!-- Live Atlas Replica Set Status Pill -->
+          <div style="display: flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; color: var(--success); font-family: var(--font-mono);">
+            <span class="live-pulse-dot"></span> ATLAS M0 REPLICA SET
+          </div>
+
+          <!-- Theme Switcher Group -->
+          <div class="theme-picker-group">
+            <button class="theme-btn active" id="hdr-theme-midnight" onclick="setAppTheme('tactical-midnight')" title="Tactical Midnight Theme">🌌 Midnight</button>
+            <button class="theme-btn" id="hdr-theme-emerald" onclick="setAppTheme('emerald-sentinel')" title="Emerald Sentinel Theme">🌿 Emerald</button>
+            <button class="theme-btn" id="hdr-theme-cyberpunk" onclick="setAppTheme('cyberpunk-neon')" title="Cyberpunk Neon Theme">🔮 Cyber</button>
+            <button class="theme-btn" id="hdr-theme-arctic" onclick="setAppTheme('arctic-light')" title="Arctic Light Mode">☀️ Arctic</button>
+          </div>
+
+          <div id="isolated-alert-pill" style="display: none; background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid #ef4444; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 700;">
+            ⚠️ ISOLATED REGIONS DETECTED
+          </div>
+          <div class="user-badge">
+            <span id="user-display-name" style="font-weight: 700; font-size: 13px;">admin</span>
+            <span id="user-display-role" class="role-pill role-control">CONTROL_ROOM</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 1. DASHBOARD PANEL -->
+      <section id="panel-dashboard" class="view-panel active">
+        <div id="escalation-banner" class="escalation-banner banner-normal">
+          <span id="escalation-text">OPERATIONAL STATUS: NORMAL</span>
+          <span style="font-size: 12px; font-weight: 500;">Multi-criteria dynamic triage engine active</span>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card alert-card">
+            <div class="stat-title">Live Triage Queue</div>
+            <div class="stat-value" id="stat-queue-count">0</div>
+            <div class="stat-subtext">Waiting & partially allocated</div>
+          </div>
+          <div class="stat-card warning-card">
+            <div class="stat-title">Pending Review</div>
+            <div class="stat-value" id="stat-inbox-count">0</div>
+            <div class="stat-subtext">Incoming field assessments</div>
+          </div>
+          <div class="stat-card success-card">
+            <div class="stat-title">Available Stock</div>
+            <div class="stat-value" id="stat-stock-summary">0 / 0</div>
+            <div class="stat-subtext">Medicine kits / Food packs</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Rescue Teams</div>
+            <div class="stat-value" id="stat-teams-summary">0 / 0</div>
+            <div class="stat-subtext">Available / Total teams</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Shelter Capacity</div>
+            <div class="stat-value" id="stat-shelter-summary">0 / 0</div>
+            <div class="stat-subtext">Reserved / Total capacity</div>
+          </div>
+          <div class="stat-card success-card">
+            <div class="stat-title">Stock Integrity Check</div>
+            <div class="stat-value" id="stat-integrity-status" style="font-size: 20px; color: var(--success);">100% BALANCED</div>
+            <div class="stat-subtext">Available + Reserved == Ledger</div>
+          </div>
+        </div>
+
+        <!-- Interactive Topological Network Visualizer Widget -->
+        <div class="topology-widget-container">
+          <div class="topology-header">
+            <div class="card-title">
+              <span>🗺️</span> Interactive Disaster Logistics Network Graph
+            </div>
+            <div class="topology-legend">
+              <div class="legend-item"><span class="legend-dot" style="background: #38bdf8;"></span> Region (1-10)</div>
+              <div class="legend-item"><span class="legend-dot" style="background: #10b981;"></span> Depot Hub (D1, D2)</div>
+              <div class="legend-item"><span class="legend-dot" style="background: #8b5cf6;"></span> Shelter (S1, S2)</div>
+              <div class="legend-item"><span class="legend-dot" style="background: #38bdf8;"></span> Open Road</div>
+              <div class="legend-item"><span class="legend-dot" style="background: #ef4444;"></span> Blocked Hazard (⚠️)</div>
+            </div>
+          </div>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+            Dynamic in-memory graph visualization. Click any road line below to toggle road blockages in real-time, instantly recalculating shortest-path Dijkstra routes and partition reachability.
+          </p>
+          <svg id="dashboard-network-svg" class="svg-network-canvas" viewBox="0 0 920 400"></svg>
+        </div>
+
+        <!-- Quick Allocation Controls -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Immediate Allocation Actions</div>
+            <div style="display: flex; gap: 10px;">
+              <button class="btn btn-primary btn-sm" onclick="processNextDirect()">⚡ Process Top Ranked Request</button>
+              <button class="btn btn-secondary btn-sm" onclick="processAllDirect()">🚀 Process All Waiting</button>
+              <button class="btn btn-secondary btn-sm" onclick="refreshAllData()">🔄 Refresh</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+              Executes two-phase allocation: reachability check (BFS/Dijkstra) &rarr; atomic conditional reservation inside MongoDB transaction.
+            </p>
+            <div class="table-responsive">
+              <table class="data-table" id="table-dashboard-queue">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Request ID</th>
+                    <th>Region</th>
+                    <th>Severity</th>
+                    <th>Population</th>
+                    <th>Type</th>
+                    <th>Why This Rank</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody><!-- Dynamic --></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. REVIEW INBOX PANEL -->
+      <section id="panel-inbox" class="view-panel">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>📥</span> Field Assessment Review Inbox
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button class="btn btn-secondary btn-sm" onclick="loadInbox()">🔄 Refresh</button>
+              <button class="btn btn-primary btn-sm" onclick="openAddRequestModal()">+ Emergency Phone-In</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+              Unified field incident assessments awaiting Control Room validation. Approving a report creates linked requests in the live Priority Queue with Need-First tie-breaker arrival slots.
+            </p>
+            <div class="table-responsive">
+              <table class="data-table" id="table-inbox">
+                <thead>
+                  <tr>
+                    <th>Report ID</th>
+                    <th>Region</th>
+                    <th>Officer</th>
+                    <th>START Triage Breakdown</th>
+                    <th>Calculated Severity</th>
+                    <th>Relief Needs &amp; Order</th>
+                    <th>Road Access</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody><!-- Dynamic --></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. PRIORITY QUEUE PANEL -->
+      <section id="panel-queue" class="view-panel">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Live Dynamic Priority Queue (In-Memory Heap)</div>
+            <span style="font-size: 12px; color: var(--text-muted);">
+              Rule: Severity 5&rarr;1 DESC &bull; Population DESC &bull; Arrival Sequence ASC (FIFO)
+            </span>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="data-table" id="table-queue-full">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Request ID</th>
+                    <th>Region</th>
+                    <th>Severity</th>
+                    <th>Population</th>
+                    <th>Arrival #</th>
+                    <th>Why This Rank (Deterministic Justification)</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody><!-- Dynamic --></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. PROCESS DESK PANEL -->
+      <section id="panel-process" class="view-panel">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Interactive Allocation Desk (Preview &rarr; Commit Workflow)</div>
+          </div>
+          <div class="card-body">
+            <div style="display: flex; gap: 16px; margin-bottom: 24px; align-items: flex-end;">
+              <div style="flex: 1;">
+                <label style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px;">
+                  Select Request to Process
+                </label>
+                <select id="select-process-request" class="form-control" onchange="handleSelectProcessRequest(this.value)">
+                  <!-- Dynamic -->
+                </select>
+              </div>
+              <button class="btn btn-secondary" onclick="executePreviewForSelected()">🔍 Preview Plan (No Writes)</button>
+              <button class="btn btn-success" id="btn-commit-selected" onclick="executeCommitForSelected()" disabled>
+                ✅ Commit Transaction
+              </button>
+            </div>
+
+            <!-- Preview Display Card -->
+            <div id="preview-result-container" style="display: none; background: #111827; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px;">
+              <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 12px;" id="preview-title">Allocation Plan Preview</h3>
+              <div id="preview-status-pill" style="margin-bottom: 16px;"></div>
+              <div id="preview-details-body" style="font-size: 13px; line-height: 1.6;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. ALLOCATIONS PANEL -->
+      <section id="panel-allocations" class="view-panel">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Active Missions & Dispatch Records</div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="data-table" id="table-allocations">
+                <thead>
+                  <tr>
+                    <th>Allocation ID</th>
+                    <th>Request ID</th>
+                    <th>Type</th>
+                    <th>Target Region</th>
+                    <th>Assigned Asset</th>
+                    <th>Allocated Units</th>
+                    <th>Travel Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody><!-- Dynamic --></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. ROAD NETWORK PANEL -->
+      <section id="panel-roads" class="view-panel">
+        <div class="topology-widget-container">
+          <div class="topology-header">
+            <div class="card-title">
+              <span>🛣️</span> Visual Road Network &amp; Live Blockage Monitor
+            </div>
+            <div class="topology-legend">
+              <div class="legend-item"><span class="legend-dot" style="background: #38bdf8;"></span> Open Road</div>
+              <div class="legend-item"><span class="legend-dot" style="background: #ef4444;"></span> Closed / Blocked (⚠️)</div>
+              <div class="legend-item"><span class="legend-dot" style="background: #eab308;"></span> Dijkstra Route Path</div>
+            </div>
+          </div>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+            Interactive graph canvas. Click any road to toggle blockage. When calculating shortest paths below, the optimal path is illuminated in glowing gold.
+          </p>
+          <svg id="roads-network-svg" class="svg-network-canvas" viewBox="0 0 920 400"></svg>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Road Network (Graph Edges & Status)</div>
+            </div>
+            <div class="card-body">
+              <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">
+                Closing roads dynamically triggers graph rebuilding, Dijkstra re-routing, and isolated village detection.
+              </p>
+              <div class="table-responsive">
+                <table class="data-table" id="table-roads">
+                  <thead>
+                    <tr>
+                      <th>Road ID</th>
+                      <th>From &rarr; To</th>
+                      <th>Travel Time</th>
+                      <th>Status</th>
+                      <th>Closure Reason</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody><!-- Dynamic --></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Route Finder Tool -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Dijkstra Shortest Path Finder</div>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label>Source Node</label>
+                <select id="route-source" class="form-control"></select>
+              </div>
+              <div class="form-group">
+                <label>Destination Node</label>
+                <select id="route-target" class="form-control"></select>
+              </div>
+              <button class="btn btn-primary" onclick="calculateRouteDijkstra()" style="width: 100%; justify-content: center;">
+                Calculate Shortest Path
+              </button>
+              <div id="route-calc-result" style="margin-top: 16px; font-size: 13px; display: none; background: #111827; padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                <!-- Dynamic -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. STOCK & DEPOTS PANEL -->
+      <section id="panel-stock" class="view-panel">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Warehouse Depots & Stock Inventories</div>
+            <button class="btn btn-primary btn-sm" onclick="openRestockModal()">+ Restock / Adjust Depot</button>
+          </div>
+          <div class="card-body">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-bottom: 24px;" id="depots-cards-container">
+              <!-- Dynamic -->
+            </div>
+
+            <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 12px;">Immutable Stock Ledger (Audit Trail)</h3>
+            <div class="table-responsive">
+              <table class="data-table" id="table-ledger">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Depot</th>
+                    <th>Item</th>
+                    <th>Delta</th>
+                    <th>Action</th>
+                    <th>User</th>
+                    <th>Reason</th>
+                  </tr>
+                </thead>
+                <tbody><!-- Dynamic --></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. TEAMS & SHELTERS PANEL -->
+      <section id="panel-teams" class="view-panel">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Search & Rescue Teams</div>
+          </div>
+          <div class="card-body">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px;" id="teams-cards-container">
+              <!-- Dynamic -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="panel-shelters" class="view-panel">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Evacuation Shelters & Occupancy</div>
+          </div>
+          <div class="card-body">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px;" id="shelters-cards-container">
+              <!-- Dynamic -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. REGION BOARD PANEL -->
+      <section id="panel-regions" class="view-panel">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Region Priority Board</div>
+            <span style="font-size: 12px; color: var(--text-muted);">Region Rank = its highest-severity active waiting request</span>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="data-table" id="table-region-board">
+                <thead>
+                  <tr>
+                    <th>Region ID</th>
+                    <th>Region Name</th>
+                    <th>Population</th>
+                    <th>Highest Active Severity</th>
+                    <th>Top Waiting Request</th>
+                    <th>Priority Justification</th>
+                  </tr>
+                </thead>
+                <tbody><!-- Dynamic --></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10. USER MANAGEMENT PANEL -->
+      <section id="panel-users" class="view-panel">
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Personnel & Officers</div>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="data-table" id="table-users">
+                  <thead>
+                    <tr>
+                      <th>Username</th>
+                      <th>Role</th>
+                      <th>Assigned Regions</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody><!-- Dynamic --></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Create Field Officer</div>
+            </div>
+            <div class="card-body">
+              <form onsubmit="handleCreateUserSubmit(event)">
+                <div class="form-group">
+                  <label>Username</label>
+                  <input type="text" id="new-user-username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label>Password</label>
+                  <input type="password" id="new-user-password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label>Assigned Regions (e.g. 1, 2, 3)</label>
+                  <input type="text" id="new-user-regions" class="form-control" placeholder="1, 2, 3" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                  Create Officer Account
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11. AUDIT LOG PANEL -->
+      <section id="panel-audit" class="view-panel">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Administrative Audit Trail</div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="data-table" id="table-audit">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                    <th>Details</th>
+                  </tr>
+                </thead>
+                <tbody><!-- Dynamic --></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12. IMPACT & SDGS PANEL -->
+      <section id="panel-impact" class="view-panel">
+        <div class="stats-grid">
+          <div class="stat-card success-card">
+            <div class="stat-title">Fulfilled Requests</div>
+            <div class="stat-value" id="impact-percent-fulfilled">0%</div>
+            <div class="stat-subtext">Delivered or Allocated</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Evacuated Citizens</div>
+            <div class="stat-value" id="impact-sheltered">0</div>
+            <div class="stat-subtext">Safe shelter slots filled</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Relief Kits Delivered</div>
+            <div class="stat-value" id="impact-kits">0</div>
+            <div class="stat-subtext">Medicine + Food rations</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Avg Travel Time</div>
+            <div class="stat-value" id="impact-avg-time">0 min</div>
+            <div class="stat-subtext">Shortest path routing</div>
+          </div>
+          <div class="stat-card success-card">
+            <div class="stat-title">Double Allocations</div>
+            <div class="stat-value" style="color: var(--success);">0</div>
+            <div class="stat-subtext">Guaranteed by transactions</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">UN Sustainable Development Goals (SDG) Alignment</div>
+          </div>
+          <div class="card-body" id="sdg-container">
+            <!-- Dynamic SDG cards -->
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Infrastructure & Operational Cost Analysis</div>
+          </div>
+          <div class="card-body">
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6;" id="cost-note-text">
+              Operates entirely on the free MongoDB Atlas M0 cluster tier and standalone lightweight Java 17 runtime ($0.00 cloud operational cost).
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 13. DESIGN NOTES PANEL -->
+      <section id="panel-design" class="view-panel">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">System Architecture & Algorithmic Complexity</div>
+          </div>
+          <div class="card-body" style="font-size: 13px; line-height: 1.7; color: var(--text-muted);">
+            <h4 style="color: #fff; margin-bottom: 8px;">1. Multi-Criteria Priority Queue</h4>
+            <p>Built with <code>java.util.PriorityQueue</code> using a composite Comparator: <strong>Severity DESC &rarr; Population DESC &rarr; ArrivalNo ASC</strong>.
+            Insert &amp; poll run in <strong>O(log n)</strong>. Dynamic updates use <code>remove(req)</code> then <code>add(req)</code> in <strong>O(n)</strong>.</p>
+
+            <h4 style="color: #fff; margin-top: 16px; margin-bottom: 8px;">2. Graph Routing & Reachability</h4>
+            <p>Undirected graph stored as an adjacency list <code>HashMap&lt;Integer, List&lt;Edge&gt;&gt;</code>. Skips closed roads during construction.
+            BFS and DFS reachability traversals run in <strong>O(V + E)</strong>. Dijkstra shortest path runs in <strong>O((V + E) log V)</strong> using a min-heap.</p>
+
+            <h4 style="color: #fff; margin-top: 16px; margin-bottom: 8px;">3. Two-Layer Concurrency & Atomic Reservations</h4>
+            <p><strong>Layer 1:</strong> In-process synchronized lock around <code>AllocationService.commit()</code> preventing local thread interleaving.<br>
+            <strong>Layer 2:</strong> MongoDB multi-document ACID transactions (<code>ClientSession.withTransaction</code>) combined with conditional update filters (<code>{$gte}</code> for stock, <code>{$expr: {$gte: [{$subtract: ["$capacity", "$reserved"]}, qty]}}</code> for shelters). Physical double-promising is impossible.</p>
+
+            <h4 style="color: #fff; margin-top: 16px; margin-bottom: 8px;">4. Unified Single Assessment Form & Need-First Tie-Breaking</h4>
+            <p>Field officers submit <strong>one form per affected region</strong> containing all needs (Rescue, Shelter, Medicine, Food) and a Need-First ranking sequence. When approved, two linked requests (<code>RescueRequest</code> and <code>SupplyRequest</code>) are created. Whichever request satisfies the #1 ranked need is assigned the first <code>arrivalNo</code> sequence, guaranteeing it wins the queue tie-breaker against the sibling request from the same region.</p>
+
+            <h4 style="color: #fff; margin-top: 16px; margin-bottom: 8px;">5. START Mass-Casualty Triage & Honest Labelling</h4>
+            <div style="background: rgba(234, 179, 8, 0.08); border: 1px solid rgba(234, 179, 8, 0.3); border-radius: var(--radius-sm); padding: 14px; margin-top: 8px;">
+              <strong style="color: #fde047;">HONEST LABELLING STATEMENT:</strong>
+              <ul style="margin: 6px 0 0 16px; padding: 0; color: #fef08a;">
+                <li>Triage categories follow the adult START (Simple Triage and Rapid Treatment) mass-casualty method. START is an international first-responder protocol, <strong>not an official Government of India system</strong>, and must be performed by a responder physically at the scene. Remote operators cannot diagnose casualties.</li>
+                <li>Thresholds (&ge;5 Red = Level 5, etc.) and relief kit ratios (1 med kit / 10 people, 1 food pack / 5 person-days) are project assumptions configured in <code>SeverityConfig</code>.</li>
+                <li>L1/L2 escalation levels are adapted from national disaster management concepts.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 14. FIELD OFFICER PANELS -->
+      <section id="panel-officer-area" class="view-panel">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">My Assigned Jurisdiction (Live Feed)</div>
+          </div>
+          <div class="card-body">
+            <div style="margin-bottom: 20px;">
+              <span style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-muted);">Assigned Regions:</span>
+              <span id="officer-assigned-regions-badge" style="margin-left: 8px; font-weight: 700; color: #60a5fa;">None</span>
+            </div>
+
+            <h3 style="font-size: 14px; font-weight: 700; margin-bottom: 12px;">Active Incidents in My Area</h3>
+            <div class="table-responsive" style="margin-bottom: 24px;">
+              <table class="data-table" id="table-officer-area-requests">
+                <thead>
+                  <tr>
+                    <th>Request ID</th>
+                    <th>Region</th>
+                    <th>Severity</th>
+                    <th>Population</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody><!-- Dynamic --></tbody>
+              </table>
+            </div>
+
+            <h3 style="font-size: 14px; font-weight: 700; margin-bottom: 12px;">Incoming Relief Convoys & Rescue Missions</h3>
+            <div class="table-responsive">
+              <table class="data-table" id="table-officer-area-allocations">
+                <thead>
+                  <tr>
+                    <th>Allocation ID</th>
+                    <th>Type</th>
+                    <th>Target Region</th>
+                    <th>Dispatched Supplies / Team</th>
+                    <th>ETA (Travel Time)</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody><!-- Dynamic --></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 14. FIELD INCIDENT ASSESSMENT FORM (SECTIONS A-F & LIVE PREVIEW) -->
+      <section id="panel-officer-new" class="view-panel">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h2 style="font-size: 20px; font-weight: 800; letter-spacing: -0.3px;" id="report-form-heading">Single Incident Assessment Report</h2>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+              Unified field report capturing casualty triage, threat level, relief needs, and within-region priority.
+            </p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-secondary btn-sm" type="button" onclick="resetReportForm()">↺ Reset Form</button>
+            <button class="btn btn-secondary btn-sm" type="button" onclick="toggleStartGuidance()">ℹ️ START Guidance</button>
+          </div>
+        </div>
+
+        <div class="report-form-layout">
+          <!-- LEFT: Form Sections A to F -->
+          <div class="report-form-sections">
+            <form id="single-report-form" onsubmit="handleSingleReportSubmit(event)">
+              <input type="hidden" id="editing-report-id" value="">
+
+              <!-- SECTION A: LOCATION & ASSESSMENT CONDITIONS -->
+              <div class="form-section">
+                <div class="form-section-header">
+                  <div class="form-section-title">
+                    <span class="form-section-badge">A</span>
+                    Location &amp; Road Access
+                  </div>
+                  <span style="font-size: 11px; color: var(--text-muted);">Assigned Jurisdiction</span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                  <div class="form-group">
+                    <label for="report-region-select">Target Region *</label>
+                    <select id="report-region-select" class="form-control" required onchange="triggerLiveSeverityPreview()">
+                      <!-- Dynamic regions populated per user permissions -->
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="report-road-access">Road Access Observed</label>
+                    <select id="report-road-access" class="form-control" required>
+                      <option value="OPEN" selected>🟢 Open / Passable</option>
+                      <option value="BLOCKED">🔴 Blocked / Closed Hazard</option>
+                      <option value="UNKNOWN">⚪ Unknown / Unverified</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SECTION B: START CASUALTY PICTURE -->
+              <div class="form-section">
+                <div class="form-section-header">
+                  <div class="form-section-title">
+                    <span class="form-section-badge">B</span>
+                    START Mass-Casualty Picture
+                  </div>
+                  <span style="font-size: 11px; color: var(--text-muted);">Simple Triage &amp; Rapid Treatment</span>
+                </div>
+
+                <!-- Collapsible START Guidance & Honest Labelling -->
+                <div class="start-guidance-card" id="start-guidance-box">
+                  <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                    <span>🩺 4-Step START Mass-Casualty Field Assessment:</span>
+                    <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8;">Adult Standard</span>
+                  </div>
+                  <div class="start-check-step">
+                    <span class="start-step-num">Step 1</span>
+                    <div><strong>Can the person walk?</strong> &rarr; Yes = <span class="color-dot dot-green"></span><strong>Green (Minor / Walking Wounded)</strong>. If no, proceed to Step 2.</div>
+                  </div>
+                  <div class="start-check-step">
+                    <span class="start-step-num">Step 2</span>
+                    <div><strong>Breathing?</strong> &rarr; Reposition airway. Still not breathing = <span class="color-dot dot-black"></span><strong>Black (Deceased / Expectant)</strong>. Starts breathing = <span class="color-dot dot-red"></span><strong>Red (Immediate)</strong>.</div>
+                  </div>
+                  <div class="start-check-step">
+                    <span class="start-step-num">Step 3</span>
+                    <div><strong>Respiration Rate:</strong> &rarr; &gt; 30 breaths/min = <span class="color-dot dot-red"></span><strong>Red (Immediate)</strong>. If &lt; 30 breaths/min, proceed to Step 4.</div>
+                  </div>
+                  <div class="start-check-step">
+                    <span class="start-step-num">Step 4</span>
+                    <div><strong>Perfusion &amp; Mental Status:</strong> &rarr; Radial pulse absent / refill &gt; 2s OR fails verbal commands = <span class="color-dot dot-red"></span><strong>Red (Immediate)</strong>. Pulse present, refill &le; 2s, and follows commands = <span class="color-dot dot-yellow"></span><strong>Yellow (Delayed)</strong>.</div>
+                  </div>
+
+                  <!-- Honest Labelling Notice -->
+                  <div style="margin-top: 12px; padding: 10px 14px; background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.35); border-radius: 6px; color: #fde047; font-size: 11px; line-height: 1.5;">
+                    <strong>⚠️ HONEST LABELLING NOTICE:</strong>
+                    <ul style="margin: 4px 0 0 16px; padding: 0;">
+                      <li>Triage categories follow the adult START method. START is a widely used field protocol, <em>NOT an official Government of India system</em>, and must be performed by a responder physically at the scene. Remote operators cannot diagnose casualties.</li>
+                      <li>Thresholds (&ge;5 Red = Level 5) and relief kit sizes (1 med kit / 10 people, 1 food pack / 5 person-days) are project assumptions configured in <code>SeverityConfig</code>.</li>
+                      <li>L1/L2 escalation alerts are adapted from national disaster management concepts.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Casualty Count Inputs -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                  <div class="form-group">
+                    <label for="report-count-total">Total Affected Population in Vicinity *</label>
+                    <input type="number" id="report-count-total" class="form-control" min="1" value="500" required oninput="triggerLiveSeverityPreview()">
+                  </div>
+                  <div class="form-group">
+                    <label for="report-count-red">
+                      <span class="color-dot dot-red"></span> Red (Immediate / Critical) *
+                    </label>
+                    <input type="number" id="report-count-red" class="form-control" min="0" value="6" required oninput="triggerLiveSeverityPreview()">
+                  </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 16px;">
+                  <div class="form-group">
+                    <label for="report-count-yellow">
+                      <span class="color-dot dot-yellow"></span> Yellow (Delayed) *
+                    </label>
+                    <input type="number" id="report-count-yellow" class="form-control" min="0" value="12" required oninput="triggerLiveSeverityPreview()">
+                  </div>
+                  <div class="form-group">
+                    <label for="report-count-green">
+                      <span class="color-dot dot-green"></span> Green (Minor / Walking) *
+                    </label>
+                    <input type="number" id="report-count-green" class="form-control" min="0" value="80" required oninput="triggerLiveSeverityPreview()">
+                  </div>
+                  <div class="form-group">
+                    <label for="report-count-black">
+                      <span class="color-dot dot-black"></span> Black (Deceased) *
+                    </label>
+                    <input type="number" id="report-count-black" class="form-control" min="0" value="0" required oninput="triggerLiveSeverityPreview()">
+                  </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                  <div class="form-group">
+                    <label for="report-count-trapped">Physically Trapped Under Debris / Water</label>
+                    <input type="number" id="report-count-trapped" class="form-control" min="0" value="2" oninput="triggerLiveSeverityPreview()">
+                  </div>
+                  <div class="form-group">
+                    <label for="report-count-vulnerable">Vulnerable Persons (Children, Elderly, Pregnant)</label>
+                    <input type="number" id="report-count-vulnerable" class="form-control" min="0" value="25" oninput="triggerLiveSeverityPreview()">
+                  </div>
+                </div>
+
+                <div id="count-validation-error" class="inline-validation-msg">
+                  ⚠️ Triage category sum (Red + Yellow + Green + Black) cannot exceed Total Affected Population.
+                </div>
+              </div>
+
+              <!-- SECTION C: PHYSICAL CONDITIONS -->
+              <div class="form-section">
+                <div class="form-section-header">
+                  <div class="form-section-title">
+                    <span class="form-section-badge">C</span>
+                    Physical Conditions &amp; Environmental Threat
+                  </div>
+                  <span style="font-size: 11px; color: var(--text-muted);">Urgency Multipliers</span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center;">
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label for="report-hours">Hours Without Clean Water / Food / Supplies</label>
+                    <input type="number" id="report-hours" class="form-control" min="0" value="14" oninput="triggerLiveSeverityPreview()">
+                    <small style="color: var(--text-muted); font-size: 11px;">&ge; 24h triggers Level 3; &ge; 48h amplifies threat</small>
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0; padding-top: 14px;">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                      <input type="checkbox" id="report-threat" style="width: 20px; height: 20px; accent-color: var(--danger);" onchange="triggerLiveSeverityPreview()">
+                      <span>
+                        <strong style="color: #f87171;">Active Ongoing Threat</strong><br>
+                        <span style="font-size: 11px; color: var(--text-muted);">Rising floods, active aftershocks, fire spread, landslides</span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SECTION D: MULTI-NEED RELIEF BREAKDOWN -->
+              <div class="form-section">
+                <div class="form-section-header">
+                  <div class="form-section-title">
+                    <span class="form-section-badge">D</span>
+                    Relief Needs Selection
+                  </div>
+                  <span style="font-size: 11px; color: var(--text-muted);">Tick all that apply</span>
+                </div>
+
+                <div class="need-selection-grid">
+                  <!-- 1. RESCUE -->
+                  <div class="need-item-card ticked" id="card-need-rescue">
+                    <div class="need-item-header" onclick="toggleNeedCard('rescue')">
+                      <label onclick="event.stopPropagation()">
+                        <input type="checkbox" id="need-check-rescue" checked onchange="handleNeedCheckboxChanged('RESCUE')">
+                        <span>🚒 Search &amp; Rescue Extraction</span>
+                      </label>
+                      <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">Rescue Team Asset</span>
+                    </div>
+                    <div class="need-item-body" id="body-need-rescue">
+                      <div class="form-group" style="margin-bottom: 0;">
+                        <label for="need-rescue-people">Persons Requiring Physical Extraction *</label>
+                        <input type="number" id="need-rescue-people" class="form-control" min="1" value="2" oninput="syncNeedFirstList()">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 2. SHELTER -->
+                  <div class="need-item-card ticked" id="card-need-shelter">
+                    <div class="need-item-header" onclick="toggleNeedCard('shelter')">
+                      <label onclick="event.stopPropagation()">
+                        <input type="checkbox" id="need-check-shelter" checked onchange="handleNeedCheckboxChanged('SHELTER')">
+                        <span>⛺ Emergency Evacuation Shelter</span>
+                      </label>
+                      <span class="badge" style="background: rgba(139, 92, 246, 0.2); color: #c084fc;">Shelter Place Asset</span>
+                    </div>
+                    <div class="need-item-body" id="body-need-shelter">
+                      <div class="form-group" style="margin-bottom: 0;">
+                        <label for="need-shelter-people">Displaced Persons Requiring Shelter Slots *</label>
+                        <input type="number" id="need-shelter-people" class="form-control" min="1" value="45" oninput="syncNeedFirstList()">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 3. MEDICINE -->
+                  <div class="need-item-card ticked" id="card-need-medicine">
+                    <div class="need-item-header" onclick="toggleNeedCard('medicine')">
+                      <label onclick="event.stopPropagation()">
+                        <input type="checkbox" id="need-check-medicine" checked onchange="handleNeedCheckboxChanged('MEDICINE')">
+                        <span>💊 Medical Trauma Supplies &amp; First Aid</span>
+                      </label>
+                      <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">Depot Stock Asset</span>
+                    </div>
+                    <div class="need-item-body" id="body-need-medicine">
+                      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                          <label for="need-med-people">Injured / Critical Persons *</label>
+                          <input type="number" id="need-med-people" class="form-control" min="1" value="18" oninput="updateMedicineKitCalculations()">
+                        </div>
+                        <div class="form-group">
+                          <label for="need-med-kits">
+                            Medicine Kits Requested
+                            <small id="med-suggested-label" style="color: #38bdf8; font-weight: 700;">(Auto: 2 kits)</small>
+                          </label>
+                          <input type="number" id="need-med-kits" class="form-control" min="1" value="2" oninput="checkMedicineKitOverride()">
+                        </div>
+                      </div>
+                      <div class="form-group" id="group-med-reason" style="display: none; margin-bottom: 0;">
+                        <label for="need-med-reason" style="color: #f59e0b;">Required Justification (Differs from calculated ⌈people / 10⌉) *</label>
+                        <input type="text" id="need-med-reason" class="form-control" placeholder="Trauma severity requires double triage kits...">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 4. FOOD -->
+                  <div class="need-item-card" id="card-need-food">
+                    <div class="need-item-header" onclick="toggleNeedCard('food')">
+                      <label onclick="event.stopPropagation()">
+                        <input type="checkbox" id="need-check-food" onchange="handleNeedCheckboxChanged('FOOD')">
+                        <span>🍲 Food Rations &amp; Drinking Water</span>
+                      </label>
+                      <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">Depot Stock Asset</span>
+                    </div>
+                    <div class="need-item-body" id="body-need-food" style="display: none;">
+                      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+                        <div class="form-group">
+                          <label for="need-food-people">Persons Requiring Food *</label>
+                          <input type="number" id="need-food-people" class="form-control" min="1" value="100" oninput="updateFoodKitCalculations()">
+                        </div>
+                        <div class="form-group">
+                          <label for="need-food-days">Duration (Days)</label>
+                          <input type="number" id="need-food-days" class="form-control" min="1" value="2" oninput="updateFoodKitCalculations()">
+                        </div>
+                        <div class="form-group">
+                          <label for="need-food-kits">
+                            Food Packs Requested
+                            <small id="food-suggested-label" style="color: #38bdf8; font-weight: 700;">(Auto: 40 packs)</small>
+                          </label>
+                          <input type="number" id="need-food-kits" class="form-control" min="1" value="40" oninput="checkFoodKitOverride()">
+                        </div>
+                      </div>
+                      <div class="form-group" id="group-food-reason" style="display: none; margin-bottom: 0;">
+                        <label for="need-food-reason" style="color: #f59e0b;">Required Justification (Differs from calculated ⌈people × days / 5⌉) *</label>
+                        <input type="text" id="need-food-reason" class="form-control" placeholder="Extreme dehydration and delayed resupply convoy...">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="need-validation-error" class="inline-validation-msg">
+                  ⚠️ At least one need (Rescue, Shelter, Medicine, or Food) must be ticked.
+                </div>
+              </div>
+
+              <!-- SECTION E: WHICH NEED FIRST (RANKING LIST) -->
+              <div class="form-section">
+                <div class="form-section-header">
+                  <div class="form-section-title">
+                    <span class="form-section-badge">E</span>
+                    Need-First Dispatch Priority
+                  </div>
+                  <span style="font-size: 11px; color: var(--text-muted);">Within-Region Queue Ordering</span>
+                </div>
+
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
+                  Specify which need must be processed first. Requests from this report share the same severity and population; <strong>the #1 ranked need receives the earlier arrival sequence slot</strong> in the queue.
+                </p>
+
+                <div class="need-order-list" id="need-order-container">
+                  <!-- Dynamic items with ▲ Up / ▼ Down buttons -->
+                </div>
+              </div>
+
+              <!-- SECTION F: NOTES & SUBMISSION -->
+              <div class="form-section">
+                <div class="form-section-header">
+                  <div class="form-section-title">
+                    <span class="form-section-badge">F</span>
+                    Field Notes &amp; Dispatch Confirmation
+                  </div>
+                  <span style="font-size: 11px; color: var(--text-muted);">Transmission</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="report-notes">Eyewitness Remarks &amp; Access Hazards</label>
+                  <textarea id="report-notes" class="form-control" rows="3" placeholder="Road passable via high clearing; temporary triage station established at school building..."></textarea>
+                </div>
+
+                <button type="submit" id="btn-submit-report" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 14px; font-size: 15px;">
+                  📡 Transmit Assessment Report to Control Room
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- RIGHT: Sticky Severity Preview Card -->
+          <div class="report-form-preview-aside">
+            <div class="sticky-preview-card" id="report-severity-preview-card">
+              <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.8px; margin-bottom: 12px;">
+                Live Decision Table Preview
+              </div>
+
+              <div class="preview-badge-display sev-3" id="preview-badge-box">
+                <div class="preview-level-num" id="preview-level-val">3</div>
+                <div class="preview-label-text" id="preview-label-val">MODERATE DISTRESS</div>
+                <div class="preview-rule-pill" id="preview-rule-val">RULE_3_DELAYED_OR_TRAPPED</div>
+              </div>
+
+              <div class="preview-explanation" id="preview-explanation-box">
+                Evaluating input counts against deterministic worst-finding-wins decision matrix...
+              </div>
+
+              <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-color); font-size: 12px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="color: var(--text-muted);">Suggested Medicine Kits:</span>
+                  <strong id="preview-med-kits-val" style="color: #60a5fa;">2 kits</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="color: var(--text-muted);">Suggested Food Packs:</span>
+                  <strong id="preview-food-kits-val" style="color: #60a5fa;">40 packs</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--text-muted);">First Request Dispatched:</span>
+                  <strong id="preview-first-need-val" style="color: #38bdf8;">RESCUE</strong>
+                </div>
+              </div>
+
+              <div style="margin-top: 16px; font-size: 11px; color: var(--text-dim); text-align: center;">
+                ⚡ Deterministic evaluation via <code>POST /api/severity/preview</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 15. MY SUBMITTED INCIDENT REPORTS -->
+      <section id="panel-officer-reports" class="view-panel">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>📋</span> My Incident Assessment Reports
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="loadOfficerReports()">🔄 Refresh</button>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="data-table" id="table-officer-reports">
+                <thead>
+                  <tr>
+                    <th>Report ID</th>
+                    <th>Region</th>
+                    <th>Version</th>
+                    <th>Severity</th>
+                    <th>Needs Order</th>
+                    <th>Status</th>
+                    <th>Audit / Reason</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody><!-- Dynamic --></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="panel-officer-road" class="view-panel">
+        <div class="card" style="max-width: 600px; margin: 0 auto;">
+          <div class="card-header">
+            <div class="card-title">Report Road Blockage or Hazard</div>
+          </div>
+          <div class="card-body">
+            <form onsubmit="handleOfficerSubmitRoadReport(event)">
+              <div class="form-group">
+                <label>Affected Road</label>
+                <select id="hazard-road" class="form-control" required></select>
+              </div>
+              <div class="form-group">
+                <label>Hazard Details / Obstruction Reason</label>
+                <textarea id="hazard-details" class="form-control" rows="3" placeholder="Flooding, landslide, bridge damage..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-warning" style="width: 100%; justify-content: center;">
+                Transmit Road Hazard Warning
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODALS -->
+
+  <!-- Add Request Modal -->
+  <div class="modal-overlay" id="modal-add-request">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Log Emergency Phone-In Request</div>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-add-request')">&times;</button>
+      </div>
+      <form onsubmit="handleAddRequestSubmit(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Region</label>
+            <select id="modal-req-region" class="form-control" required></select>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Severity (1 to 5)</label>
+              <select id="modal-req-severity" class="form-control" required>
+                <option value="5">Level 5 (Most Critical)</option>
+                <option value="4">Level 4</option>
+                <option value="3" selected>Level 3</option>
+                <option value="2">Level 2</option>
+                <option value="1">Level 1</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Affected Population</label>
+              <input type="number" id="modal-req-pop" class="form-control" min="1" value="1000" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Urgent Need Category</label>
+            <select id="modal-req-urgent" class="form-control">
+              <option value="RESCUE">Rescue First</option>
+              <option value="MEDICINE" selected>Medicine First</option>
+              <option value="FOOD">Food First</option>
+            </select>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>People to Evacuate</label>
+              <input type="number" id="modal-req-evac" class="form-control" min="0" value="0">
+            </div>
+            <div class="form-group">
+              <label>Medicine Kits</label>
+              <input type="number" id="modal-req-med" class="form-control" min="0" value="40">
+            </div>
+            <div class="form-group">
+              <label>Food Packs</label>
+              <input type="number" id="modal-req-food" class="form-control" min="0" value="80">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-request')">Cancel</button>
+          <button type="submit" class="btn btn-primary">En-queue Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Override Severity Modal -->
+  <div class="modal-overlay" id="modal-override-severity">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Control Room Severity Override</div>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-override-severity')">&times;</button>
+      </div>
+      <form onsubmit="handleOverrideSubmit(event)">
+        <div class="modal-body">
+          <input type="hidden" id="override-request-id">
+          <div class="form-group">
+            <label>New Severity Ranking</label>
+            <select id="override-new-severity" class="form-control">
+              <option value="5">Level 5 (Mass Casualties / Catastrophic)</option>
+              <option value="4">Level 4 (High Urgency)</option>
+              <option value="3">Level 3 (Moderate)</option>
+              <option value="2">Level 2 (Minor)</option>
+              <option value="1">Level 1 (Low)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Mandatory Justification Reason</label>
+            <textarea id="override-reason" class="form-control" rows="3" placeholder="Direct eyewitness report confirmed storm surge..." required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-override-severity')">Cancel</button>
+          <button type="submit" class="btn btn-warning">Apply Override</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Override Report Severity Modal (Single Assessment Spec) -->
+  <div class="modal-overlay" id="modal-override-report">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Control Room Report Severity Override</div>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-override-report')">&times;</button>
+      </div>
+      <form onsubmit="handleReportOverrideSubmit(event)">
+        <div class="modal-body">
+          <input type="hidden" id="override-rep-id">
+          <div style="background: var(--bg-card-alt); padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-bottom: 18px; font-size: 13px;">
+            <div><strong>Report ID:</strong> <span id="override-rep-id-display" style="font-family: var(--font-mono); color: #60a5fa;"></span></div>
+            <div style="margin-top: 4px;"><strong>Calculated Severity:</strong> <span id="override-rep-curr-display" class="badge-sev"></span> <span id="override-rep-rule-display" style="color: var(--text-muted); font-size: 11px;"></span></div>
+          </div>
+          <div class="form-group">
+            <label for="override-rep-new-level">New Target Severity (1 to 5) *</label>
+            <select id="override-rep-new-level" class="form-control" required>
+              <option value="5">Level 5 - Catastrophic (Mass Casualties / Imminent Danger)</option>
+              <option value="4">Level 4 - Severe Emergency (High Priority)</option>
+              <option value="3">Level 3 - Moderate Distress</option>
+              <option value="2">Level 2 - Minor Incidents</option>
+              <option value="1">Level 1 - Low Priority</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="override-rep-reason">Mandatory Justification Reason *</label>
+            <textarea id="override-rep-reason" class="form-control" rows="3" placeholder="Direct airborne drone imagery confirmed flash flood breach in low-lying sector..." required></textarea>
+            <small style="color: var(--text-muted); font-size: 11px;">Overrides are permanently recorded in the administrative audit log and report history.</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-override-report')">Cancel</button>
+          <button type="submit" class="btn btn-warning">Apply Severity Override</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Reject Report Modal -->
+  <div class="modal-overlay" id="modal-reject-report">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Reject Field Incident Assessment</div>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-reject-report')">&times;</button>
+      </div>
+      <form onsubmit="handleReportRejectSubmit(event)">
+        <div class="modal-body">
+          <input type="hidden" id="reject-rep-id">
+          <div style="background: var(--bg-card-alt); padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-bottom: 18px; font-size: 13px;">
+            <div><strong>Report ID:</strong> <span id="reject-rep-id-display" style="font-family: var(--font-mono); color: #f87171;"></span></div>
+          </div>
+          <div class="form-group">
+            <label for="reject-rep-reason">Mandatory Rejection Reason *</label>
+            <textarea id="reject-rep-reason" class="form-control" rows="3" placeholder="Duplicate incident report; region already served by primary dispatch team..." required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-reject-report')">Cancel</button>
+          <button type="submit" class="btn btn-danger">Reject Report</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- View Full Report Details Modal -->
+  <div class="modal-overlay" id="modal-view-report">
+    <div class="modal-content" style="max-width: 720px;">
+      <div class="modal-header">
+        <div class="modal-title" id="view-report-title">Incident Assessment Details</div>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-view-report')">&times;</button>
+      </div>
+      <div class="modal-body" id="view-report-body" style="font-size: 13px; line-height: 1.6;">
+        <!-- Dynamic report breakdown -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-view-report')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Restock Modal -->
+  <div class="modal-overlay" id="modal-restock">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Warehouse Stock Adjustment / Restock</div>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-restock')">&times;</button>
+      </div>
+      <form onsubmit="handleRestockSubmit(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Target Depot</label>
+            <select id="restock-depot" class="form-control" required></select>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Medicine Kits Delta (+ / -)</label>
+              <input type="number" id="restock-med-delta" class="form-control" value="50" required>
+            </div>
+            <div class="form-group">
+              <label>Food Packs Delta (+ / -)</label>
+              <input type="number" id="restock-food-delta" class="form-control" value="100" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Ledger Reason</label>
+            <input type="text" id="restock-reason" class="form-control" value="Emergency airlift replenishment" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-restock')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Commit Stock Ledger</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

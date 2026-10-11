@@ -194,24 +194,25 @@ public class Main {
         System.out.println("============================================================");
         System.out.println("   DISASTER MANAGEMENT RESOURCE ALLOCATION SYSTEM");
         System.out.println("============================================================");
-        System.out.println("  1.  [✓] View Locations");
-        System.out.println("  2.  [✓] View Road Network");
-        System.out.println("  3.  [✓] View Resources / Stock");
-        System.out.println("  4.  [✓] Add Relief Request");
-        System.out.println("  5.  [✓] View Pending Requests");
+        System.out.println("  1.  [C] View Locations");
+        System.out.println("  2.  [C] View Road Network");
+        System.out.println("  3.  [C] View Resources / Stock");
+        System.out.println("  4.  [C] Add Relief Request");
+        System.out.println("  5.  [C] View Pending Requests");
         System.out.println("  6.  [ ] Process Relief Requests");
         System.out.println("  7.  [ ] Update Road Status");
         System.out.println("  8.  [ ] Update Resource Stock");
         System.out.println("  9.  [ ] Update Relief Request");
-        System.out.println("  10. [✓] View Allocations");
-        System.out.println("  11. [✓] View Rescue Teams");
-        System.out.println("  12. [✓] View Shelters");
+        System.out.println("  10. [C] View Allocations");
+        System.out.println("  11. [C] View Rescue Teams");
+        System.out.println("  12. [C] View Shelters");
         System.out.println("  13. [ ] View System Status");
         System.out.println("  14.     Exit");
         System.out.println("============================================================");
     }
 
-    // -------------------------------------------------------
+    // ---
+    // ----------------------------------------------------
     // Handles adding a new relief request via console input
     // -------------------------------------------------------
     private static int addReliefRequest(Scanner scanner, ArrayList<Location> locations,

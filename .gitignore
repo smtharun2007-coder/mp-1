@@ -1,0 +1,21 @@
+# Build outputs
+target/
+*.class
+dependency-reduced-pom.xml
+
+# Environment and sensitive secrets
+.env
+.env.*
+!.env.example
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS files
+Thumbs.db
+.DS_Store
