@@ -804,7 +804,7 @@
           </div>
           <div style="display: flex; gap: 10px;">
             <button class="btn btn-secondary btn-sm" type="button" onclick="resetReportForm()">↺ Reset Form</button>
-            <button class="btn btn-secondary btn-sm" type="button" onclick="toggleStartGuidance()">ℹ️ START Guidance</button>
+            <button class="btn btn-secondary btn-sm" id="btn-toggle-guidance" type="button" onclick="toggleStartGuidance()">ℹ️ START Guidance</button>
           </div>
         </div>
 
@@ -852,37 +852,166 @@
                   <span style="font-size: 11px; color: var(--text-muted);">Simple Triage &amp; Rapid Treatment</span>
                 </div>
 
-                <!-- Collapsible START Guidance & Honest Labelling -->
+                <!-- Redesigned High-Impact START Guidance & Honest Labelling Protocol Card -->
                 <div class="start-guidance-card" id="start-guidance-box">
-                  <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
-                    <span>🩺 4-Step START Mass-Casualty Field Assessment:</span>
-                    <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8;">Adult Standard</span>
-                  </div>
-                  <div class="start-check-step">
-                    <span class="start-step-num">Step 1</span>
-                    <div><strong>Can the person walk?</strong> &rarr; Yes = <span class="color-dot dot-green"></span><strong>Green (Minor / Walking Wounded)</strong>. If no, proceed to Step 2.</div>
-                  </div>
-                  <div class="start-check-step">
-                    <span class="start-step-num">Step 2</span>
-                    <div><strong>Breathing?</strong> &rarr; Reposition airway. Still not breathing = <span class="color-dot dot-black"></span><strong>Black (Deceased / Expectant)</strong>. Starts breathing = <span class="color-dot dot-red"></span><strong>Red (Immediate)</strong>.</div>
-                  </div>
-                  <div class="start-check-step">
-                    <span class="start-step-num">Step 3</span>
-                    <div><strong>Respiration Rate:</strong> &rarr; &gt; 30 breaths/min = <span class="color-dot dot-red"></span><strong>Red (Immediate)</strong>. If &lt; 30 breaths/min, proceed to Step 4.</div>
-                  </div>
-                  <div class="start-check-step">
-                    <span class="start-step-num">Step 4</span>
-                    <div><strong>Perfusion &amp; Mental Status:</strong> &rarr; Radial pulse absent / refill &gt; 2s OR fails verbal commands = <span class="color-dot dot-red"></span><strong>Red (Immediate)</strong>. Pulse present, refill &le; 2s, and follows commands = <span class="color-dot dot-yellow"></span><strong>Yellow (Delayed)</strong>.</div>
+                  <div class="start-guidance-header">
+                    <div class="start-guidance-title-group">
+                      <div class="start-guidance-icon-badge">🩺</div>
+                      <div>
+                        <div class="start-guidance-title">4-Step START Mass-Casualty Field Assessment</div>
+                        <div class="start-guidance-subtitle">Simple Triage and Rapid Treatment &bull; Clinical Field Decision Flow</div>
+                      </div>
+                    </div>
+                    <div class="start-guidance-meta">
+                      <span class="start-pill-badge">Adult Protocol Standard</span>
+                      <button type="button" class="start-close-btn" onclick="toggleStartGuidance()" title="Dismiss guidance">&times;</button>
+                    </div>
                   </div>
 
-                  <!-- Honest Labelling Notice -->
-                  <div style="margin-top: 12px; padding: 10px 14px; background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.35); border-radius: 6px; color: #fde047; font-size: 11px; line-height: 1.5;">
-                    <strong>⚠️ HONEST LABELLING NOTICE:</strong>
-                    <ul style="margin: 4px 0 0 16px; padding: 0;">
-                      <li>Triage categories follow the adult START method. START is a widely used field protocol, <em>NOT an official Government of India system</em>, and must be performed by a responder physically at the scene. Remote operators cannot diagnose casualties.</li>
-                      <li>Thresholds (&ge;5 Red = Level 5) and relief kit sizes (1 med kit / 10 people, 1 food pack / 5 person-days) are project assumptions configured in <code>SeverityConfig</code>.</li>
-                      <li>L1/L2 escalation alerts are adapted from national disaster management concepts.</li>
-                    </ul>
+                  <!-- Quick-Reference Triage Category Strip -->
+                  <div class="start-triage-ribbon">
+                    <div class="triage-tag-pill tag-red">
+                      <span class="color-dot dot-red"></span>
+                      <div>
+                        <strong>RED &bull; IMMEDIATE</strong>
+                        <span>Critical &bull; Priority 1</span>
+                      </div>
+                    </div>
+                    <div class="triage-tag-pill tag-yellow">
+                      <span class="color-dot dot-yellow"></span>
+                      <div>
+                        <strong>YELLOW &bull; DELAYED</strong>
+                        <span>Serious &bull; Priority 2</span>
+                      </div>
+                    </div>
+                    <div class="triage-tag-pill tag-green">
+                      <span class="color-dot dot-green"></span>
+                      <div>
+                        <strong>GREEN &bull; MINOR</strong>
+                        <span>Walking &bull; Priority 3</span>
+                      </div>
+                    </div>
+                    <div class="triage-tag-pill tag-black">
+                      <span class="color-dot dot-black"></span>
+                      <div>
+                        <strong>BLACK &bull; EXPECTANT</strong>
+                        <span>Deceased / Palliative</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 4-Step Interactive Decision Steps -->
+                  <div class="start-steps-grid">
+                    <!-- Step 1 -->
+                    <div class="start-step-card">
+                      <div class="step-card-header">
+                        <span class="step-card-num">STEP 01</span>
+                        <span class="step-card-title">🚶‍♂️ Walking Ability</span>
+                      </div>
+                      <div class="step-card-query">Can the individual walk unassisted to designated safe area?</div>
+                      <div class="step-card-outcomes">
+                        <div class="step-outcome-item">
+                          <span>Yes (Ambulatory)</span>
+                          <span class="outcome-pill outcome-green">🟢 Green (Minor)</span>
+                        </div>
+                        <div class="step-outcome-item">
+                          <span>No (Immobile)</span>
+                          <span class="outcome-next">Advance to Step 02 &rarr;</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="start-step-card">
+                      <div class="step-card-header">
+                        <span class="step-card-num">STEP 02</span>
+                        <span class="step-card-title">🫁 Airway &amp; Breathing</span>
+                      </div>
+                      <div class="step-card-query">Is the individual breathing spontaneously?</div>
+                      <div class="step-card-outcomes">
+                        <div class="step-outcome-item">
+                          <span>No breath after reposition</span>
+                          <span class="outcome-pill outcome-black">⚫ Black (Deceased)</span>
+                        </div>
+                        <div class="step-outcome-item">
+                          <span>Resumes breathing</span>
+                          <span class="outcome-pill outcome-red">🔴 Red (Immediate)</span>
+                        </div>
+                        <div class="step-outcome-item">
+                          <span>Already breathing</span>
+                          <span class="outcome-next">Advance to Step 03 &rarr;</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="start-step-card">
+                      <div class="step-card-header">
+                        <span class="step-card-num">STEP 03</span>
+                        <span class="step-card-title">⏱️ Respiratory Rate</span>
+                      </div>
+                      <div class="step-card-query">Count breathing frequency per minute:</div>
+                      <div class="step-card-outcomes">
+                        <div class="step-outcome-item">
+                          <span>&gt; 30 breaths / min</span>
+                          <span class="outcome-pill outcome-red">🔴 Red (Immediate)</span>
+                        </div>
+                        <div class="step-outcome-item">
+                          <span>&le; 30 breaths / min</span>
+                          <span class="outcome-next">Advance to Step 04 &rarr;</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="start-step-card">
+                      <div class="step-card-header">
+                        <span class="step-card-num">STEP 04</span>
+                        <span class="step-card-title">🧠 Perfusion &amp; Mental</span>
+                      </div>
+                      <div class="step-card-query">Assess radial pulse / capillary refill &amp; simple verbal commands:</div>
+                      <div class="step-card-outcomes">
+                        <div class="step-outcome-item">
+                          <span>Refill &gt; 2s / No pulse OR fails commands</span>
+                          <span class="outcome-pill outcome-red">🔴 Red (Immediate)</span>
+                        </div>
+                        <div class="step-outcome-item">
+                          <span>Refill &le; 2s &amp; follows commands</span>
+                          <span class="outcome-pill outcome-yellow">🟡 Yellow (Delayed)</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Honest Labelling & Governance Card -->
+                  <div class="start-governance-box">
+                    <div class="start-governance-header">
+                      <span class="governance-icon">🛡️</span>
+                      <span>OPERATIONAL PROTOCOL &amp; SYSTEM GOVERNANCE NOTICE</span>
+                    </div>
+                    <div class="start-governance-grid">
+                      <div class="governance-item">
+                        <span class="gov-bullet">📍</span>
+                        <div>
+                          <strong>Physical On-Scene Verification</strong>
+                          <p>Triage follows the adult START method and must be performed by certified on-site responders at the disaster perimeter (not remote tele-diagnosis).</p>
+                        </div>
+                      </div>
+                      <div class="governance-item">
+                        <span class="gov-bullet">⚙️</span>
+                        <div>
+                          <strong>Configured Severity Rules</strong>
+                          <p>&ge; 5 Red casualties automatically triggers Level 5 Critical Escalation. Ration sizing (1 med kit / 10 victims, 1 food pack / 5 person-days) is configured in <code>SeverityConfig</code>.</p>
+                        </div>
+                      </div>
+                      <div class="governance-item">
+                        <span class="gov-bullet">⚡</span>
+                        <div>
+                          <strong>Control Room Authority</strong>
+                          <p>Transmitted field assessments are staged in the Review Inbox. Allocation, depot routing, and rescue team dispatches require Control Room operator authorization.</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 

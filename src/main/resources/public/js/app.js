@@ -1507,7 +1507,12 @@ function initReportFormView() {
 function toggleStartGuidance() {
   const box = document.getElementById('start-guidance-box');
   if (!box) return;
-  box.style.display = (box.style.display === 'none') ? 'block' : 'none';
+  const isHidden = (box.style.display === 'none');
+  box.style.display = isHidden ? 'block' : 'none';
+  const btn = document.getElementById('btn-toggle-guidance');
+  if (btn) {
+    btn.innerHTML = isHidden ? '✕ Hide Guidance' : 'ℹ️ START Guidance';
+  }
 }
 
 function toggleNeedCard(type) {
